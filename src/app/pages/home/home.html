@@ -1,0 +1,104 @@
+<main>
+  <app-site-header variant="overlay" />
+
+  <section class="hero" aria-labelledby="project-title">
+    <div class="hero__inner">
+      <p class="eyebrow">
+        <span class="eyebrow__line" aria-hidden="true"></span>
+        {{ project.eyebrow }}
+      </p>
+
+      <h1 class="hero__title" id="project-title">
+        <span class="hero__title-lead">{{ project.titleLead }}</span>
+        <span class="hero__title-tail">{{ project.titleTail }}</span>
+      </h1>
+
+      <p class="hero__intro">
+        Sistema de documentación de las nueve fases del Método de Desarrollo de Arquitectura.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" routerLink="/" fragment="objetivos">
+          Ver objetivos
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M4 10h12M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+        <a class="btn btn--ghost" routerLink="/" fragment="fases">Explorar las fases</a>
+      </div>
+    </div>
+
+    <div class="hero__foot">
+      <span class="hero__credit">{{ project.credit }}</span>
+      <a class="hero__scroll" routerLink="/" fragment="objetivos" aria-label="Bajar a los objetivos">
+        <span class="hero__scroll-dot" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+  <section id="objetivos" class="section objectives">
+    <div class="container objectives__grid">
+      <div class="objectives__aside">
+        <p class="kicker">Objetivos</p>
+        <h2 class="section-title">Objetivo general</h2>
+        <p class="objectives__note">
+          El propósito que orienta las nueve fases del ADM y articula la transformación hacia un
+          expediente clínico electrónico único.
+        </p>
+      </div>
+
+      <div class="objectives__content">
+        <p class="objectives__general">{{ general }}</p>
+
+        <h3 class="objectives__subtitle">Objetivos específicos</h3>
+        <ol class="objectives__list">
+          @for (objective of specific; track objective; let i = $index) {
+            <li class="objectives__item">
+              <span class="objectives__num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <p>{{ objective }}</p>
+            </li>
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="fases" class="section phases">
+    <div class="container">
+      <header class="phases__head">
+        <div>
+          <p class="kicker">Método de Desarrollo de Arquitectura</p>
+          <h2 class="section-title">Fases del ADM</h2>
+        </div>
+        <p class="phases__intro">
+          Nueve hojas de trabajo, una por fase. Cada una se abre en blanco para elaborar y
+          consolidar sus entregables TOGAF.
+        </p>
+      </header>
+
+      <div class="phases__grid">
+        @for (phase of phases; track phase.id) {
+          <a class="phase-card" [routerLink]="['/fase', phase.id]">
+            <span class="phase-card__top">
+              <span class="phase-card__numeral">{{ phase.numeral }}</span>
+              <span class="phase-card__label">{{ phase.label }}</span>
+            </span>
+            <span class="phase-card__name">{{ phase.name }}</span>
+            @if (phase.detail) {
+              <span class="phase-card__detail">{{ phase.detail }}</span>
+            }
+            <span class="phase-card__summary">{{ phase.summary }}</span>
+            <span class="phase-card__cta">
+              Abrir hoja
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M4 10h12M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-site-footer />

@@ -1,0 +1,61 @@
+<app-site-header />
+
+<main class="phase-page">
+  <div class="phase-bar">
+    <div class="phase-bar__inner">
+      <a class="back" routerLink="/">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M15 10H3M8 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Inicio
+      </a>
+      @if (phase(); as current) {
+        <span class="phase-bar__meta">{{ current.label }} · {{ current.heading }}</span>
+      }
+    </div>
+  </div>
+
+  @if (phase(); as current) {
+    <article class="sheet" aria-labelledby="phase-title">
+      <header class="sheet__head">
+        <p class="sheet__kicker">TOGAF 9.1 · {{ current.label }}</p>
+        <h1 class="sheet__title" id="phase-title">{{ current.name }}</h1>
+        @if (current.detail) {
+          <p class="sheet__detail">{{ current.detail }}</p>
+        }
+        <p class="sheet__project">{{ project.title }}</p>
+        <span class="sheet__rule" aria-hidden="true"></span>
+      </header>
+      <div class="sheet__body" aria-label="Contenido de la fase"></div>
+    </article>
+
+    <nav class="phase-nav" aria-label="Navegación entre fases">
+      @if (nav().previous; as previous) {
+        <a class="phase-nav__link" [routerLink]="['/fase', previous.id]">
+          <span class="phase-nav__dir">← Fase anterior</span>
+          <span class="phase-nav__name">{{ previous.label }} · {{ previous.name }}</span>
+        </a>
+      } @else {
+        <span class="phase-nav__spacer"></span>
+      }
+
+      @if (nav().next; as next) {
+        <a class="phase-nav__link phase-nav__link--next" [routerLink]="['/fase', next.id]">
+          <span class="phase-nav__dir">Fase siguiente →</span>
+          <span class="phase-nav__name">{{ next.label }} · {{ next.name }}</span>
+        </a>
+      } @else {
+        <span class="phase-nav__spacer"></span>
+      }
+    </nav>
+  } @else {
+    <section class="phase-missing">
+      <p class="kicker">TOGAF 9.1</p>
+      <h1>Fase no encontrada</h1>
+      <p>La fase solicitada no forma parte del ADM de este proyecto.</p>
+      <a class="btn btn--primary" routerLink="/">Volver al inicio</a>
+    </section>
+  }
+</main>
+
+<app-site-footer />

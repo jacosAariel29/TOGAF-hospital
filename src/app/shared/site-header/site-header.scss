@@ -1,0 +1,155 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+:host(.is-overlay) {
+  position: fixed;
+  inset: 0 0 auto;
+}
+
+.site-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.site-header--overlay {
+  background: transparent;
+  border-bottom-color: transparent;
+  color: #fff;
+  backdrop-filter: none;
+}
+
+.site-header--overlay.site-header--solid {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: var(--line);
+  color: var(--ink);
+  backdrop-filter: blur(10px);
+}
+
+.site-header__inner {
+  width: min(1220px, 92vw);
+  margin-inline: auto;
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.brand__mark svg {
+  width: 19px;
+  height: 19px;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.brand__text strong {
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.brand__text small {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.site-header--overlay .brand__text small {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.site-header--overlay.site-header--solid .brand__text small {
+  color: var(--ink-soft);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.7rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.site-nav a {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  padding-block: 0.35rem;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.site-nav a:hover {
+  opacity: 1;
+}
+
+.site-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+@media (max-width: 720px) {
+  .site-header__inner {
+    min-height: 66px;
+  }
+
+  .brand__text small {
+    display: none;
+  }
+
+  .site-nav {
+    gap: 1.1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .site-nav a:first-child {
+    display: none;
+  }
+}

@@ -1,0 +1,24 @@
+<header
+  class="site-header"
+  [class.site-header--overlay]="variant() === 'overlay'"
+  [class.site-header--solid]="scrolled()"
+>
+  <div class="site-header__inner">
+    <a class="brand" routerLink="/" aria-label="Ir al inicio">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M12 4v16M4 12h16" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="brand__text">
+        <strong>Arquitectura Empresarial</strong>
+        <small>Hospital de Tingo María · TOGAF 9.1</small>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a routerLink="/" fragment="objetivos">Objetivos</a>
+      <a routerLink="/" fragment="fases">Fases del ADM</a>
+    </nav>
+  </div>
+</header>
