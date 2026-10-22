@@ -15,33 +15,54 @@
         <p class="band__kicker">TOGAF 9.1 · {{ phase()?.label }} · Entregable {{ item.code }}</p>
         <h1 class="band__title">{{ item.title }}</h1>
 
-        @if (isDocument()) {
-          <p class="band__english">{{ doc.english }}</p>
-          <p class="band__lead">{{ doc.summary }}</p>
+        @if (doc(); as document) {
+          <p class="band__english">{{ document.english }}</p>
+          <p class="band__lead">{{ document.summary }}</p>
 
           <dl class="band__meta">
             <div class="band__meta-item">
               <dt>Documento</dt>
-              <dd>{{ doc.code }} · versión {{ doc.version }}</dd>
+              <dd>{{ document.code }} · versión {{ document.version }}</dd>
             </div>
             <div class="band__meta-item">
               <dt>Fecha</dt>
-              <dd>{{ doc.date }}</dd>
+              <dd>{{ document.date }}</dd>
             </div>
             <div class="band__meta-item">
               <dt>Autor</dt>
-              <dd>{{ doc.author }}</dd>
+              <dd>{{ document.author }}</dd>
             </div>
             <div class="band__meta-item">
               <dt>Estado</dt>
-              <dd>{{ doc.status }}</dd>
+              <dd>{{ document.status }}</dd>
+            </div>
+          </dl>
+        } @else if (formalDocument(); as document) {
+          <p class="band__lead">{{ item.description }}</p>
+
+          <dl class="band__meta">
+            <div class="band__meta-item">
+              <dt>Documento</dt>
+              <dd>{{ document.code }} · versión {{ document.version }}</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Fecha</dt>
+              <dd>{{ document.date }}</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Extensión</dt>
+              <dd>{{ document.pages }} páginas</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Archivo</dt>
+              <dd>PDF · {{ document.file.size }}</dd>
             </div>
           </dl>
         }
       </div>
     </section>
 
-    @if (isDocument()) {
+    @if (doc(); as document) {
       <div class="doc-layout">
         <article class="doc-main">
           @for (section of sections(); track section.id) {
@@ -205,14 +226,14 @@
                   @case ('cta') {
                     <div class="doc-cta">
                       <div>
-                        <p class="doc-cta__title">Documento oficial {{ doc.code }} · versión {{ doc.version }}</p>
+                        <p class="doc-cta__title">Documento oficial {{ document.code }} · versión {{ document.version }}</p>
                         <p class="doc-cta__text">
-                          PDF de {{ doc.file.size }} aprobado como borrador para revisión del Architecture Review
+                          PDF de {{ document.file.size }} aprobado como borrador para revisión del Architecture Review
                           Board. Descárguelo o ábralo en el visor antes de la exposición.
                         </p>
                       </div>
                       <div class="doc-cta__actions">
-                        <a class="btn btn--primary" [href]="doc.file.path" [download]="doc.file.name">
+                        <a class="btn btn--primary" [href]="document.file.path" [download]="document.file.name">
                           Descargar PDF
                         </a>
                         <a class="btn btn--ghost" [routerLink]="previewLink()" target="_blank" rel="noopener">
@@ -230,10 +251,10 @@
         <aside class="doc-aside">
           <div class="doc-file">
             <p class="doc-file__label">Documento oficial</p>
-            <p class="doc-file__name">{{ doc.file.name }}</p>
-            <p class="doc-file__meta">{{ doc.version }} · {{ doc.date }} · PDF {{ doc.file.size }}</p>
+            <p class="doc-file__name">{{ document.file.name }}</p>
+            <p class="doc-file__meta">{{ document.version }} · {{ document.date }} · PDF {{ document.file.size }}</p>
             <div class="doc-file__actions">
-              <a class="btn btn--primary btn--sm" [href]="doc.file.path" [download]="doc.file.name">
+              <a class="btn btn--primary btn--sm" [href]="document.file.path" [download]="document.file.name">
                 Descargar
               </a>
               <a
@@ -278,6 +299,92 @@
           </div>
         </aside>
       </div>
+    } @else if (formalDocument(); as document) {
+      <div class="doc-layout">
+        <article class="doc-main">
+          <section class="summary-pending" aria-labelledby="summary-pending-title">
+            <p class="doc-section__kicker">Resumen del entregable</p>
+            <h2 class="doc-section__title" id="summary-pending-title">Resumen aún no disponible</h2>
+
+            <p class="doc-p doc-p--lead">
+              El resumen ejecutivo de este entregable se publicará después de la revisión del
+              Architecture Review Board. Mientras tanto, el documento formal completo ya está
+              disponible para su consulta.
+            </p>
+
+            <dl class="summary-pending__meta">
+              <div class="summary-pending__meta-item">
+                <dt>Documento</dt>
+                <dd>{{ document.code }} · versión {{ document.version }}</dd>
+              </div>
+              <div class="summary-pending__meta-item">
+                <dt>Fecha</dt>
+                <dd>{{ document.date }}</dd>
+              </div>
+              <div class="summary-pending__meta-item">
+                <dt>Extensión</dt>
+                <dd>{{ document.pages }} páginas</dd>
+              </div>
+              <div class="summary-pending__meta-item">
+                <dt>Archivo</dt>
+                <dd>PDF · {{ document.file.size }}</dd>
+              </div>
+            </dl>
+
+            <div class="summary-pending__actions">
+              <a class="btn btn--primary" [routerLink]="previewLink()" target="_blank" rel="noopener">
+                Abrir documento formal ↗
+              </a>
+              <a
+                class="btn btn--ghost"
+                [href]="document.file.path"
+                [download]="document.file.name"
+              >
+                Descargar PDF
+              </a>
+            </div>
+
+            <p class="summary-pending__note">
+              Si el visor no carga,
+              <a [href]="document.file.path" target="_blank" rel="noopener">abra el PDF directamente</a>.
+            </p>
+          </section>
+        </article>
+
+        <aside class="doc-aside">
+          <div class="doc-file">
+            <p class="doc-file__label">Documento formal</p>
+            <p class="doc-file__name">{{ document.file.name }}</p>
+            <p class="doc-file__meta">
+              {{ document.version }} · {{ document.date }} · PDF {{ document.file.size }}
+            </p>
+            <div class="doc-file__actions">
+              <a
+                class="btn btn--primary btn--sm"
+                [href]="document.file.path"
+                [download]="document.file.name"
+              >
+                Descargar
+              </a>
+              <a
+                class="btn btn--ghost btn--sm"
+                [routerLink]="previewLink()"
+                target="_blank"
+                rel="noopener"
+              >
+                Abrir visor ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="doc-nav">
+            <a class="doc-nav__link" [routerLink]="['/fase', id()]">
+              <span class="doc-nav__dir">← Fase</span>
+              <span class="doc-nav__name">{{ phase()?.label }}</span>
+            </a>
+          </div>
+        </aside>
+      </div>
     } @else {
       <div class="canvas">
         <div class="canvas__empty">
@@ -287,9 +394,9 @@
               <path d="M14 3v5h5M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </span>
-          <p class="canvas__title">Entregable en blanco</p>
+          <p class="canvas__title">Documento formal no disponible</p>
           <p class="canvas__text">
-            El contenido de este entregable se completará y aprobará en el Architecture Review Board.
+            Este entregable está habilitado, pero su documento formal todavía no se ha cargado.
           </p>
         </div>
       </div>

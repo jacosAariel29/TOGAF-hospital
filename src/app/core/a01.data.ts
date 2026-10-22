@@ -69,6 +69,7 @@ export interface A01Document {
   readonly english: string;
   readonly version: string;
   readonly date: string;
+  readonly pages: number;
   readonly status: string;
   readonly author: string;
   readonly reviewer: string;
@@ -83,6 +84,7 @@ export const A01: A01Document = {
   english: 'Architecture Vision',
   version: '2.0',
   date: '20/10/2026',
+  pages: 42,
   status: 'Borrador para revisión',
   author: 'Equipo de Arquitectura Empresarial del proyecto',
   reviewer: 'Architecture Review Board (ARB)',
@@ -91,7 +93,7 @@ export const A01: A01Document = {
   file: {
     name: 'A-01_Vision_de_la_Arquitectura.pdf',
     path: '/docs/A-01_Vision_de_la_Arquitectura.pdf',
-    size: '645 KB',
+    size: '1.5 MB',
   },
   sections: [
     {

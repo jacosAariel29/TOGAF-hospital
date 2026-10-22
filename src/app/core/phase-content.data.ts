@@ -27,11 +27,24 @@ export interface TogafStep {
 
 export type DeliverableStatus = 'available' | 'planned';
 
+export interface DeliverableDocument {
+  readonly version: string;
+  readonly date: string;
+  readonly pages: number;
+  readonly file: {
+    readonly name: string;
+    readonly path: string;
+    readonly size: string;
+  };
+}
+
 export interface PhaseDeliverable {
   readonly code: string;
   readonly title: string;
   readonly description: string;
   readonly status: DeliverableStatus;
+  readonly summaryAvailable: boolean;
+  readonly document?: DeliverableDocument;
 }
 
 export interface PhaseContent {
@@ -188,34 +201,79 @@ export const PHASE_CONTENT: Readonly<Record<string, PhaseContent>> = {
         description:
           'Sintetiza la visión, el alcance, los interesados, las brechas detectadas y el valor esperado de la transformación.',
         status: 'available',
+        summaryAvailable: true,
       },
       {
         code: 'A-02',
         title: 'Declaración de Trabajo de Arquitectura',
         description:
           'Fija los acuerdos de alcance, enfoque, roles, cronograma y criterios de aceptación del trabajo de arquitectura.',
-        status: 'planned',
+        status: 'available',
+        summaryAvailable: true,
+        document: {
+          version: '2.0',
+          date: '20/10/2026',
+          pages: 28,
+          file: {
+            name: 'A-02_Declaracion_de_Trabajo_de_Arquitectura.pdf',
+            path: '/docs/A-02_Declaracion_de_Trabajo_de_Arquitectura.pdf',
+            size: '553 KB',
+          },
+        },
       },
       {
         code: 'A-03',
         title: 'Plan de Comunicaciones',
         description:
           'Define cómo se informa y se involucra a los interesados durante todo el ciclo de desarrollo de la arquitectura.',
-        status: 'planned',
+        status: 'available',
+        summaryAvailable: true,
+        document: {
+          version: '2.0',
+          date: '20/10/2026',
+          pages: 20,
+          file: {
+            name: 'A-03_Plan_de_Comunicaciones.pdf',
+            path: '/docs/A-03_Plan_de_Comunicaciones.pdf',
+            size: '442 KB',
+          },
+        },
       },
       {
         code: 'A-04',
         title: 'Evaluación de Capacidades',
         description:
           'Diagnostica la capacidad actual del hospital para ejecutar la transformación y señala las brechas que cerrar.',
-        status: 'planned',
+        status: 'available',
+        summaryAvailable: true,
+        document: {
+          version: '2.0',
+          date: '20/10/2026',
+          pages: 26,
+          file: {
+            name: 'A-04_Evaluacion_de_Capacidades.pdf',
+            path: '/docs/A-04_Evaluacion_de_Capacidades.pdf',
+            size: '556 KB',
+          },
+        },
       },
       {
         code: 'A-05',
         title: 'Definición de la Arquitectura',
         description:
           'Primera definición formal de la arquitectura objetivo en los dominios de negocio, datos, aplicaciones y tecnología.',
-        status: 'planned',
+        status: 'available',
+        summaryAvailable: true,
+        document: {
+          version: '2.0 · arquitectura 0.1',
+          date: '20/10/2026',
+          pages: 30,
+          file: {
+            name: 'A-05_Definicion_de_la_Arquitectura.pdf',
+            path: '/docs/A-05_Definicion_de_la_Arquitectura.pdf',
+            size: '837 KB',
+          },
+        },
       },
     ],
     exitCriteria: [
@@ -225,7 +283,7 @@ export const PHASE_CONTENT: Readonly<Record<string, PhaseContent>> = {
       'La Declaración de Trabajo de Arquitectura (A-02) está aprobada y habilita el inicio de la Fase B.',
     ],
     notes: [
-      'Las hojas de cada entregable se abren en blanco: el contenido se irá completando y aprobando en el Architecture Review Board.',
+      'Los cinco entregables de la fase cuentan con resumen completo y documento formal disponible para consulta.',
       'Cada entregable tiene un dueño único dentro de la fase, para evitar duplicidades entre documentos.',
     ],
   },

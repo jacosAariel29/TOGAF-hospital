@@ -662,6 +662,82 @@
   color: var(--ink);
 }
 
+/* ---------- Resumen pendiente ---------- */
+
+.summary-pending {
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+}
+
+.summary-pending .doc-section__title {
+  margin-bottom: 1.1rem;
+}
+
+.summary-pending__meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 1.5rem 0 1.6rem;
+}
+
+.summary-pending__meta-item {
+  padding: 0.72rem 0.9rem;
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.summary-pending__meta-item dt {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.summary-pending__meta-item dd {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.summary-pending__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.summary-pending__actions .btn--ghost {
+  border: 1px solid var(--line);
+  color: var(--brand);
+}
+
+.summary-pending__actions .btn--ghost:hover {
+  background: var(--mist);
+}
+
+.summary-pending__note {
+  margin: 1rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.summary-pending__note a {
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.summary-pending__note a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 /* ---------- Estado sin contenido ---------- */
 
 .deliverable-missing {
@@ -730,6 +806,10 @@
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .summary-pending__meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 620px) {
@@ -745,6 +825,24 @@
   .doc-figure__zoom {
     right: 0.45rem;
     bottom: 0.45rem;
+  }
+
+  .summary-pending {
+    padding: 1.2rem 1rem;
+  }
+
+  .summary-pending__meta {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .summary-pending__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .summary-pending__actions .btn {
+    justify-content: center;
   }
 
   .doc-cta {

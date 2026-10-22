@@ -1,7 +1,8 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import { A01, type Cell, type DocBlock, type DocTable, type Tone } from '../../core/a01.data';
+import type { A01Document, Cell, DocBlock, DocTable, Tone } from '../../core/a01.data';
+import { findDocument } from '../../core/deliverable-documents';
 import { findDeliverable } from '../../core/phase-content.data';
 import { findPhase, neighbourPhases, phaseLabel } from '../../core/phases.data';
 import { PROJECT } from '../../core/project';
@@ -18,6 +19,19 @@ interface CellView {
 interface TableView extends Omit<DocTable, 'rows'> {
   readonly rows: readonly (readonly CellView[])[];
   readonly codes: boolean;
+}
+
+interface FormalDocument {
+  readonly code: string;
+  readonly title: string;
+  readonly version: string;
+  readonly date: string;
+  readonly pages: number;
+  readonly file: {
+    readonly name: string;
+    readonly path: string;
+    readonly size: string;
+  };
 }
 
 const CODE = /^[A-Z]{1,5}(-[A-Z]{1,3})?[.-]\d{1,2}$/;
@@ -40,7 +54,7 @@ export class DeliverablePage {
   readonly id = input.required<string>();
   readonly code = input.required<string>();
   readonly project = PROJECT;
-  readonly doc = A01;
+  readonly doc = computed<A01Document | null>(() => findDocument(this.code()));
   readonly selected = signal<LightboxFigure | null>(null);
 
   private readonly documentTitle = inject(Title);
@@ -55,12 +69,43 @@ export class DeliverablePage {
     return deliverable?.status === 'available' ? deliverable : undefined;
   });
 
-  readonly isDocument = computed(
-    () => this.code().toUpperCase() === A01.code && this.id().toLowerCase() === 'a',
-  );
+  readonly formalDocument = computed<FormalDocument | null>(() => {
+    const item = this.deliverable();
+    const document = this.doc();
+    if (!item) {
+      return null;
+    }
 
-  readonly sections = computed(() =>
-    A01.sections.map((section) => ({
+    if (document) {
+      return {
+        code: document.code,
+        title: document.title,
+        version: document.version,
+        date: document.date,
+        pages: document.pages,
+        file: document.file,
+      };
+    }
+
+    return item.document
+      ? {
+          code: item.code,
+          title: item.title,
+          version: item.document.version,
+          date: item.document.date,
+          pages: item.document.pages,
+          file: item.document.file,
+        }
+      : null;
+  });
+
+  readonly sections = computed(() => {
+    const document = this.doc();
+    if (!document) {
+      return [];
+    }
+
+    return document.sections.map((section) => ({
       ...section,
       blocks: section.blocks.map((block) =>
         block.kind === 'table'
@@ -71,8 +116,8 @@ export class DeliverablePage {
             }
           : block,
       ),
-    })),
-  );
+    }));
+  });
 
   readonly nav = computed(() => {
     const phase = findPhase(this.id());

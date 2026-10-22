@@ -1,45 +1,70 @@
-<div class="viewer">
-  <header class="viewer__bar">
-    <a class="viewer__back" [routerLink]="['/fase', id(), 'entregable', code()]">
-      <span aria-hidden="true">←</span>
-      <span>Volver al entregable</span>
-    </a>
-
-    <div class="viewer__id">
-      <span class="viewer__code">{{ doc.code }} · v{{ doc.version }}</span>
-      <span class="viewer__title">{{ doc.title }}</span>
-    </div>
-
-    <div class="viewer__actions">
-      <a class="viewer__btn viewer__btn--ghost" [href]="doc.file.path" target="_blank" rel="noopener">
-        Abrir en pestaña ↗
+@if (doc(); as document) {
+  <div class="viewer">
+    <header class="viewer__bar">
+      <a class="viewer__back" [routerLink]="['/fase', id(), 'entregable', code()]">
+        <span aria-hidden="true">←</span>
+        <span>Volver al entregable</span>
       </a>
-      <a class="viewer__btn viewer__btn--primary" [href]="doc.file.path" [download]="doc.file.name">
-        Descargar PDF
-      </a>
-    </div>
-  </header>
 
-  <div class="viewer__stage">
-    @if (!loaded()) {
-      <div class="viewer__loading" aria-hidden="true">
-        <span class="viewer__spinner"></span>
-        <p>Cargando {{ doc.file.name }} ({{ doc.file.size }})…</p>
+      <div class="viewer__id">
+        <span class="viewer__code">{{ document.code }} · v{{ document.version }}</span>
+        <span class="viewer__title">{{ document.title }}</span>
       </div>
-    }
 
-    <iframe
-      class="viewer__frame"
-      [src]="fileUrl"
-      [title]="'Vista previa de ' + doc.code + ' ' + doc.title"
-      (load)="markLoaded()"
-    ></iframe>
+      <div class="viewer__actions">
+        <a
+          class="viewer__btn viewer__btn--ghost"
+          [href]="document.file.path"
+          target="_blank"
+          rel="noopener"
+        >
+          Abrir en pestaña ↗
+        </a>
+        <a
+          class="viewer__btn viewer__btn--primary"
+          [href]="document.file.path"
+          [download]="document.file.name"
+        >
+          Descargar PDF
+        </a>
+      </div>
+    </header>
+
+    <div class="viewer__stage">
+      @if (!loaded()) {
+        <div class="viewer__loading" aria-hidden="true">
+          <span class="viewer__spinner"></span>
+          <p>Cargando {{ document.file.name }} ({{ document.file.size }})…</p>
+        </div>
+      }
+
+      <iframe
+        class="viewer__frame"
+        [src]="fileUrl()"
+        [title]="'Vista previa de ' + document.code + ' ' + document.title"
+        (load)="markLoaded()"
+      ></iframe>
+    </div>
+
+    <noscript>
+      <p class="viewer__fallback">
+        El visor necesita JavaScript.
+        <a [href]="document.file.path">Descargue el PDF</a>.
+      </p>
+    </noscript>
   </div>
-
-  <noscript>
-    <p class="viewer__fallback">
-      El visor necesita JavaScript.
-      <a [href]="doc.file.path">Descargue el PDF</a>.
-    </p>
-  </noscript>
-</div>
+} @else {
+  <div class="viewer viewer--missing">
+    <div class="viewer__missing">
+      <span class="viewer__missing-kicker">Documento formal</span>
+      <h1>Documento no disponible</h1>
+      <p>
+        Este entregable no tiene un documento formal cargado. Vuelva a la fase para consultar los
+        entregables disponibles.
+      </p>
+      <a class="viewer__btn viewer__btn--primary" [routerLink]="['/fase', id()]">
+        Volver a la fase
+      </a>
+    </div>
+  </div>
+}
