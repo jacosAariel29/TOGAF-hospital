@@ -1,10 +1,11 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import { A01, type Cell, type DocTable, type Tone } from '../../core/a01.data';
+import { A01, type Cell, type DocBlock, type DocTable, type Tone } from '../../core/a01.data';
 import { findDeliverable } from '../../core/phase-content.data';
 import { findPhase, neighbourPhases, phaseLabel } from '../../core/phases.data';
 import { PROJECT } from '../../core/project';
+import { FigureLightbox, type LightboxFigure } from '../../shared/figure-lightbox/figure-lightbox';
 import { SiteFooter } from '../../shared/site-footer/site-footer';
 import { SiteHeader } from '../../shared/site-header/site-header';
 
@@ -31,7 +32,7 @@ function normalizeCell(cell: Cell): CellView {
 
 @Component({
   selector: 'app-deliverable',
-  imports: [RouterLink, SiteHeader, SiteFooter],
+  imports: [RouterLink, SiteHeader, SiteFooter, FigureLightbox],
   templateUrl: './deliverable.html',
   styleUrl: './deliverable.scss',
 })
@@ -40,6 +41,7 @@ export class DeliverablePage {
   readonly code = input.required<string>();
   readonly project = PROJECT;
   readonly doc = A01;
+  readonly selected = signal<LightboxFigure | null>(null);
 
   private readonly documentTitle = inject(Title);
 
@@ -114,7 +116,18 @@ export class DeliverablePage {
     history.replaceState(null, '', `${location.pathname}#${id}`);
   }
 
-  width(value: number): string {
-    return `${(value / 5) * 100}%`;
+  openFigure(block: Extract<DocBlock, { kind: 'figure' }>): void {
+    const figure = block.figure;
+    this.selected.set({
+      number: block.number,
+      caption: block.caption,
+      src: figure.src,
+      alt: figure.alt,
+      note: block.note,
+    });
+  }
+
+  closeFigure(): void {
+    this.selected.set(null);
   }
 }

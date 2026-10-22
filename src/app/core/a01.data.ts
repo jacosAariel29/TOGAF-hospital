@@ -21,27 +21,15 @@ export interface Principle {
   readonly proposed?: boolean;
 }
 
-export type Figure =
-  | { readonly kind: 'concept' }
-  | {
-      readonly kind: 'capabilities';
-      readonly rows: readonly { name: string; asis: number; tobe: number; critical?: boolean }[];
-    }
-  | {
-      readonly kind: 'readiness';
-      readonly rows: readonly { name: string; state: 'red' | 'amber' | 'green'; required: string }[];
-      readonly message: string;
-    }
-  | {
-      readonly kind: 'domains';
-      readonly rows: readonly { domain: string; asis: string; tobe: string }[];
-    }
-  | {
-      readonly kind: 'process';
-      readonly rows: readonly { n: number; stage: string; asis: string; tobe: string }[];
-      readonly goals: readonly string[];
-    }
-  | { readonly kind: 'kpis'; readonly rows: readonly { code: string; from: string; to: string }[] };
+export interface ImageFigure {
+  readonly kind: 'image';
+  readonly src: string;
+  readonly thumb: string;
+  readonly alt: string;
+  readonly ratio: string;
+}
+
+export type Figure = ImageFigure;
 
 export type DocBlock =
   | { readonly kind: 'p'; readonly text: string; readonly lead?: boolean }
@@ -605,6 +593,19 @@ export const A01: A01Document = {
           ],
           note: 'Los pacientes (INT-01) no tienen acceso a la intranet; se informan mediante cartelería, avisos en salas de espera y encuestas de satisfacción. Los canales, mensajes y calendario se detallan en el Plan de Comunicaciones (A-03).',
         },
+        {
+          kind: 'figure',
+          number: 'Figura 1',
+          caption: 'Matriz poder/interés de los interesados',
+          figure: {
+            kind: 'image',
+            src: '/img/a01/figura-01-matriz-poder-interes.png',
+            thumb: '/img/a01/thumbs/figura-01-matriz-poder-interes.jpg',
+            alt: 'Matriz de poder e interés de los interesados del hospital, con los cuadrantes de actores clave, mantener satisfechos, mantener informados y esfuerzo mínimo.',
+            ratio: '1672 / 941',
+          },
+          note: 'Los actores clave validan la visión y el escenario EB-01; los externos de mayor poder condicionan el presupuesto y la interoperabilidad.',
+        },
         { kind: 'h3', text: 'Preocupaciones y vistas de arquitectura' },
         {
           kind: 'table',
@@ -748,58 +749,68 @@ export const A01: A01Document = {
           rows: [
             [
               'Información clínica del paciente',
-              'Moderado bajo',
-              'Alto',
+              'Moderado bajo (2/5)',
+              'Alto (4/5)',
               'La historia clínica está dispersa y su consulta es lenta o incompleta.',
             ],
             [
               'Continuidad de la atención',
-              'Moderado aceptable',
-              'Alto',
+              'Moderado aceptable (3/5)',
+              'Alto (4/5)',
               'La atención se organiza alrededor de los servicios y no del paciente.',
             ],
             [
               'Seguridad de los datos',
-              'Moderado aceptable',
-              'Alto',
+              'Moderado aceptable (3/5)',
+              'Alto (4/5)',
               'Existen controles, pero no están institucionalizados ni auditados.',
             ],
             [
               'Usabilidad de las aplicaciones',
-              'Moderado bajo',
-              'Alto',
+              'Moderado bajo (2/5)',
+              'Alto (4/5)',
               'Las aplicaciones no se diseñaron alrededor del trabajo clínico.',
             ],
             [
               'Infraestructura tecnológica',
-              'Bajo',
-              'Alto',
+              'Bajo (1/5)',
+              'Alto (4/5)',
               'No priorizada; vulnerable a cortes de energía y de conectividad.',
             ],
             [
               'Función de arquitectura',
-              'Inexistente',
-              'Formalizada',
+              'Inexistente (0/5)',
+              'Formalizada (3/5)',
               'No existe unidad responsable ni inventario de sistemas.',
             ],
           ],
+          note: 'Escala de madurez de 0 a 5: 0 = inexistente, 1 = bajo, 2 = moderado bajo, 3 = moderado aceptable, 4 = alto, 5 = optimizado. El detalle de la evaluación está en A-04.',
+        },
+        {
+          kind: 'figure',
+          number: 'Figura 2',
+          caption: 'Capacidades del hospital: nivel actual (AS-IS)',
+          figure: {
+            kind: 'image',
+            src: '/img/a01/figura-02-capacidades-asis.png',
+            thumb: '/img/a01/thumbs/figura-02-capacidades-asis.jpg',
+            alt: 'Gráfico de capacidades del hospital en el estado actual: información clínica, continuidad, seguridad, usabilidad, infraestructura y función de arquitectura, todas por debajo de la aspiración.',
+            ratio: '2880 / 1640',
+          },
+          note: 'Predominan los niveles bajos: la infraestructura (1/5) y la función de arquitectura (0/5) son las capacidades más débiles.',
         },
         {
           kind: 'figure',
           number: 'Figura 3',
-          caption: 'Capacidades del hospital: nivel actual (AS-IS) frente a aspiración (TO-BE)',
+          caption: 'Capacidades del hospital: nivel objetivo (TO-BE)',
           figure: {
-            kind: 'capabilities',
-            rows: [
-              { name: 'Información clínica', asis: 2, tobe: 4 },
-              { name: 'Continuidad de la atención', asis: 3, tobe: 4 },
-              { name: 'Seguridad de los datos', asis: 3, tobe: 4 },
-              { name: 'Usabilidad', asis: 2, tobe: 4 },
-              { name: 'Infraestructura', asis: 1, tobe: 4, critical: true },
-              { name: 'Función de arquitectura', asis: 0, tobe: 3, critical: true },
-            ],
+            kind: 'image',
+            src: '/img/a01/figura-03-capacidades-tobe.png',
+            thumb: '/img/a01/thumbs/figura-03-capacidades-tobe.jpg',
+            alt: 'Gráfico de capacidades del hospital en el estado objetivo: las seis capacidades alcanzan niveles altos, con la función de arquitectura formalizada.',
+            ratio: '1320 / 690',
           },
-          note: 'Escala de 0 a 5. En rojo, las dos brechas mayores: infraestructura y función de arquitectura.',
+          note: 'Todas las capacidades suben de nivel; las mayores mejoras (+3) están en infraestructura y en función de arquitectura.',
         },
         { kind: 'h3', text: 'Resumen de la preparación para la transformación' },
         {
@@ -874,24 +885,24 @@ export const A01: A01Document = {
         {
           kind: 'figure',
           number: 'Figura 4',
-          caption: 'Preparación del hospital para el cambio: estado actual frente a estado requerido',
+          caption: 'Preparación para el cambio: estado actual y estado requerido',
           figure: {
-            kind: 'readiness',
-            message: 'El hospital necesita el cambio y la Dirección lo quiere, pero aún no está listo para ejecutarlo.',
-            rows: [
-              { name: 'Visión compartida', state: 'amber', required: 'Visión validada por actores clave' },
-              { name: 'Voluntad y determinación', state: 'amber', required: 'Compromiso de jefaturas médicas' },
-              { name: 'Necesidad', state: 'green', required: 'Mantener' },
-              { name: 'Caso de negocio', state: 'red', required: 'Caso de negocio cualitativo aprobado' },
-              { name: 'Financiamiento', state: 'red', required: 'Presupuesto de corto plazo' },
-              { name: 'Patrocinio y liderazgo', state: 'red', required: 'Patrocinador designado y activo' },
-              { name: 'Gobierno', state: 'red', required: 'ARB con acta de instalación' },
-              { name: 'Capacidad de TI', state: 'red', required: 'Enlace dedicado y apoyo externo' },
-              { name: 'Capacidad de las áreas', state: 'amber', required: 'Tiempo protegido para sesiones' },
-              { name: 'Capacidad para implementar', state: 'red', required: 'Plan de infraestructura por etapas' },
-            ],
+            kind: 'image',
+            src: '/img/a01/figura-04-preparacion.png',
+            thumb: '/img/a01/thumbs/figura-04-preparacion.jpg',
+            alt: 'Tablero de preparación para el cambio con diez factores evaluados: seis en estado crítico, tres parciales y uno favorable.',
+            ratio: '1672 / 940',
           },
-          note: 'Rojo: condición ausente. Ámbar: parcial. Verde: condición presente.',
+          note: 'Seis de los diez factores están en estado crítico; el único favorable es la necesidad de cambiar.',
+        },
+        {
+          kind: 'stats',
+          items: [
+            { value: '10', label: 'factores evaluados' },
+            { value: '6', label: 'críticos' },
+            { value: '3', label: 'parciales' },
+            { value: '1', label: 'favorable' },
+          ],
         },
         { kind: 'h3', text: 'Síntesis de brechas' },
         {
@@ -1097,12 +1108,29 @@ export const A01: A01Document = {
           lead: true,
           text: 'El concepto de la solución representa en un solo diagrama cómo se relacionan los elementos de la visión. Los bloques de construcción de arquitectura (ABB) describen las capacidades que la solución necesita, sin atarse todavía a productos concretos.',
         },
+        { kind: 'h3', text: 'Atributos de la visión' },
+        {
+          kind: 'list',
+          items: [
+            'Centrada en el paciente: el recorrido de atención se diseña desde su experiencia y no desde la estructura de los servicios.',
+            'Segura: la información clínica se protege como dato sensible, con identidad, control de acceso y auditoría.',
+            'Interoperable: el expediente se conecta con el laboratorio, la farmacia y los sistemas del sector mediante interfaces formales.',
+            'Resiliente: la atención continúa ante cortes de energía o de red, y la información se sincroniza al restablecerse el servicio.',
+            'Gobernada: una función de arquitectura y un ARB deciden, priorizan y controlan la evolución tecnológica.',
+          ],
+        },
         {
           kind: 'figure',
-          number: 'Figura 1',
+          number: 'Figura 5',
           caption: 'Concepto de la solución de la arquitectura objetivo',
-          figure: { kind: 'concept' },
-          note: 'Las líneas continuas representan flujos de información; las líneas punteadas, capacidades transversales que soportan a toda la arquitectura.',
+          figure: {
+            kind: 'image',
+            src: '/img/a01/figura-05-concepto-solucion.png',
+            thumb: '/img/a01/thumbs/figura-05-concepto-solucion.jpg',
+            alt: 'Diagrama del concepto de solución: el Expediente Clínico Electrónico Único recibe la atención de consulta externa y entrega información a la Dirección y al sector, con seguridad, infraestructura y gobierno como soportes transversales.',
+            ratio: '1672 / 941',
+          },
+          note: 'Todo lo que ocurre en la atención alimenta un solo expediente; la información sale sola hacia la Dirección y hacia el sector, con seguridad, infraestructura y gobierno como soportes transversales.',
         },
         {
           kind: 'p',
@@ -1174,34 +1202,29 @@ export const A01: A01Document = {
         },
         {
           kind: 'figure',
-          number: 'Figura 5',
-          caption: 'Arquitectura AS-IS frente a TO-BE en los cuatro dominios (versión 0.1)',
+          number: 'Figura 6',
+          caption: 'Vista por capas de los cuatro dominios: arquitectura actual (AS-IS)',
           figure: {
-            kind: 'domains',
-            rows: [
-              {
-                domain: 'Negocio',
-                asis: 'Procesos por servicio; trámites repetidos',
-                tobe: 'Atención centrada en el paciente',
-              },
-              {
-                domain: 'Datos',
-                asis: 'Historia en papel y duplicados',
-                tobe: 'Expediente único e identificador único',
-              },
-              {
-                domain: 'Aplicaciones',
-                asis: 'Sistemas aislados',
-                tobe: 'Portafolio integrado con interfaces',
-              },
-              {
-                domain: 'Tecnología',
-                asis: 'Infraestructura frágil',
-                tobe: 'Plataforma resiliente y redundante',
-              },
-            ],
+            kind: 'image',
+            src: '/img/a01/figura-06-capas-asis.jpg',
+            thumb: '/img/a01/thumbs/figura-06-capas-asis.jpg',
+            alt: 'Vista por capas de la arquitectura actual: negocio, datos, aplicaciones y tecnología del Hospital de Tingo María, con los sistemas y registros existentes.',
+            ratio: '2752 / 1536',
           },
-          note: 'Diagrama principal de la exposición: resume el cambio en una sola vista.',
+          note: 'Los sistemas y los datos aparecen aislados: la ausencia de conexiones entre aplicaciones es el problema central.',
+        },
+        {
+          kind: 'figure',
+          number: 'Figura 7',
+          caption: 'Vista por capas de los cuatro dominios: arquitectura objetivo (TO-BE)',
+          figure: {
+            kind: 'image',
+            src: '/img/a01/figura-07-capas-tobe.jpg',
+            thumb: '/img/a01/thumbs/figura-07-capas-tobe.jpg',
+            alt: 'Vista por capas de la arquitectura objetivo: negocio, datos, aplicaciones y tecnología integrados alrededor del Expediente Clínico Electrónico Único y del servicio de interoperabilidad.',
+            ratio: '2752 / 1536',
+          },
+          note: 'Todo converge en el Expediente Clínico Electrónico Único y sale al sector por un solo servicio de interoperabilidad.',
         },
         { kind: 'h3', text: 'Objetivos de arquitectura' },
         {
@@ -1346,22 +1369,40 @@ export const A01: A01Document = {
         },
         {
           kind: 'figure',
-          number: 'Figura 6',
-          caption: 'Atención en consulta externa: antes (AS-IS) y después (TO-BE)',
+          number: 'Figura 8',
+          caption: 'Proceso de atención en consulta externa EB-01: situación actual (AS-IS)',
           figure: {
-            kind: 'process',
-            rows: [
-              { n: 1, stage: 'Admisión', asis: 'Fila y historia física', tobe: 'Cita y DNI' },
-              { n: 2, stage: 'Triaje', asis: 'Formato de papel', tobe: 'Signos en el expediente' },
-              { n: 3, stage: 'Consulta', asis: 'Sin resultados a la vista', tobe: 'Todo en una pantalla' },
-              { n: 4, stage: 'Órdenes', asis: 'Orden en papel', tobe: 'Orden electrónica' },
-              { n: 5, stage: 'Resultados', asis: 'Impreso que se recoge', tobe: 'En el expediente' },
-              { n: 6, stage: 'Receta', asis: 'Manuscrita', tobe: 'Electrónica' },
-              { n: 7, stage: 'Reporte al SIS', asis: 'Digitación posterior', tobe: 'Automático' },
-            ],
-            goals: ['≤ 30 min de espera', '95 % de registro completo', '0 datos repetidos'],
+            kind: 'image',
+            src: '/img/a01/figura-08-bpmn-asis.jpg',
+            thumb: '/img/a01/thumbs/figura-08-bpmn-asis.jpg',
+            alt: 'Diagrama BPMN del proceso actual de consulta externa, con ocho carriles y el paciente trasladando órdenes, resultados y recetas entre servicios.',
+            ratio: '3168 / 1344',
           },
-          note: 'Elaboración propia a partir de la Tabla 30 del A-01. La Figura 2 del documento original muestra solo el flujo TO-BE; esta figura compara ambos estados.',
+          note: 'El paciente actúa como mensajero entre consultorio, laboratorio y farmacia; el examen se repite si no hay resultados previos.',
+        },
+        {
+          kind: 'figure',
+          number: 'Figura 9',
+          caption: 'Proceso de atención en consulta externa EB-01: situación objetivo (TO-BE)',
+          figure: {
+            kind: 'image',
+            src: '/img/a01/figura-09-bpmn-tobe.jpg',
+            thumb: '/img/a01/thumbs/figura-09-bpmn-tobe.jpg',
+            alt: 'Diagrama BPMN del proceso objetivo de consulta externa, con ocho carriles, orden y resultados electrónicos y reporte automático al SIS.',
+            ratio: '3168 / 1344',
+          },
+          note: 'Los resultados anteriores siempre están en el expediente; el reporte al SIS y al MINSA lo genera el sistema.',
+        },
+        {
+          kind: 'stats',
+          items: [
+            { value: '8', label: 'carriles' },
+            { value: '9→0', label: 'documentos en papel' },
+            { value: '5→1', label: 'registros por paciente' },
+            { value: '3→0', label: 'documentos que traslada el paciente' },
+            { value: '21→0', label: 'tareas con problemas' },
+            { value: '0→10', label: 'tareas automáticas' },
+          ],
         },
         {
           kind: 'p',
@@ -1502,21 +1543,16 @@ export const A01: A01Document = {
         },
         {
           kind: 'figure',
-          number: 'Figura 7',
-          caption: 'Indicadores clave: línea base (AS-IS) y meta (TO-BE)',
+          number: 'Figura 10',
+          caption: 'Indicadores clave: línea base frente a meta',
           figure: {
-            kind: 'kpis',
-            rows: [
-              { code: 'KPI-01', from: '0 %', to: '95 %' },
-              { code: 'KPI-02', from: 'Por medir', to: '≤ 30 min' },
-              { code: 'KPI-03', from: '0 %', to: '100 %' },
-              { code: 'KPI-04', from: '0', to: '3 interfaces' },
-              { code: 'KPI-05', from: 'No formalizada', to: 'Formalizada' },
-              { code: 'KPI-06', from: 'Por obtener', to: '≥ 40 h/año' },
-              { code: 'KPI-07', from: 'Por medir', to: '100 %' },
-            ],
+            kind: 'image',
+            src: '/img/a01/figura-10-kpis.png',
+            thumb: '/img/a01/thumbs/figura-10-kpis.jpg',
+            alt: 'Tablero de los siete indicadores clave con su línea base y su meta: registro completo, espera, auditoría, interoperabilidad, función de arquitectura, capacitación e indicadores vigentes.',
+            ratio: '1672 / 941',
           },
-          note: 'Cada tarjeta muestra el valor actual frente a la meta comprometida.',
+          note: 'KPI-02, KPI-06 y KPI-07 aún no tienen línea base; KPI-05 se cumple en la propia Fase A.',
         },
         { kind: 'h3', text: 'Caso de negocio cualitativo' },
         {
@@ -1753,6 +1789,10 @@ export const A01: A01Document = {
             'La evaluación de preparación muestra que el hospital necesita y quiere el cambio, pero aún no está listo para ejecutarlo. Por ello, la primera iteración se limita a la consulta externa y las carencias de patrocinio, gobierno y financiamiento se convierten en condiciones previas de la Declaración de Trabajo.',
             'El éxito se medirá con siete KPI con línea base y meta, y los riesgos de la transformación se gestionarán con un registro único que distingue el riesgo inicial del residual.',
           ],
+        },
+        {
+          kind: 'quote',
+          text: '“Una sola historia clínica digital por paciente, que solo ve quien debe verla y que se comunica sola con el sector.”',
         },
         { kind: 'h3', text: 'Referencias' },
         {

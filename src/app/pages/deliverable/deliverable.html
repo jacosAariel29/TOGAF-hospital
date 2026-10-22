@@ -139,138 +139,21 @@
                         {{ block.caption }}
                       </figcaption>
 
-                      @switch (block.figure.kind) {
-                        @case ('concept') {
-                          <div class="fig fig--concept">
-                            <div class="concept__patient">
-                              <span class="concept__patient-title">Paciente</span>
-                              <span class="concept__patient-text">
-                                Expediente Clínico Electrónico único, desde la admisión hasta el alta
-                              </span>
-                            </div>
-
-                            <span class="concept__arrow" aria-hidden="true">↓</span>
-
-                            <div class="concept__domains">
-                              <div class="concept__domain">
-                                <span class="concept__domain-title">Negocio</span>
-                                <span class="concept__domain-text">Consulta externa centrada en el paciente</span>
-                              </div>
-                              <div class="concept__domain">
-                                <span class="concept__domain-title">Datos</span>
-                                <span class="concept__domain-text">Historia clínica estructurada y única</span>
-                              </div>
-                              <div class="concept__domain">
-                                <span class="concept__domain-title">Aplicaciones</span>
-                                <span class="concept__domain-text">HCE, laboratorio, imágenes e interoperabilidad</span>
-                              </div>
-                              <div class="concept__domain">
-                                <span class="concept__domain-title">Tecnología</span>
-                                <span class="concept__domain-text">Red, servidores y continuidad operativa</span>
-                              </div>
-                            </div>
-
-                            <div class="concept__cross">
-                              <span>Seguridad y confidencialidad</span>
-                              <span>Interoperabilidad</span>
-                              <span>Disponibilidad</span>
-                              <span>Gobierno de arquitectura</span>
-                            </div>
-                          </div>
-                        }
-
-                        @case ('capabilities') {
-                          <div class="fig fig--capabilities">
-                            <div class="caps__legend">
-                              <span><i class="caps__dot caps__dot--asis"></i> AS-IS</span>
-                              <span><i class="caps__dot caps__dot--tobe"></i> TO-BE</span>
-                              <span class="caps__scale">Escala 0 – 5</span>
-                            </div>
-                            @for (row of block.figure.rows; track row.name) {
-                              <div class="caps__row">
-                                <span class="caps__name">
-                                  {{ row.name }}
-                                  @if (row.critical) {
-                                    <span class="caps__critical" title="Capacidad crítica">crítica</span>
-                                  }
-                                </span>
-                                <span class="caps__bars">
-                                  <span class="caps__bar caps__bar--asis" [style.width]="width(row.asis)">
-                                    <i>{{ row.asis }}</i>
-                                  </span>
-                                  <span class="caps__bar caps__bar--tobe" [style.width]="width(row.tobe)">
-                                    <i>{{ row.tobe }}</i>
-                                  </span>
-                                </span>
-                              </div>
-                            }
-                          </div>
-                        }
-
-                        @case ('readiness') {
-                          <div class="fig fig--readiness">
-                            @for (row of block.figure.rows; track row.name) {
-                              <div class="ready__row">
-                                <span class="ready__light" [attr.data-state]="row.state" aria-hidden="true"></span>
-                                <span class="ready__name">{{ row.name }}</span>
-                                <span class="ready__state" [attr.data-state]="row.state">{{ row.required }}</span>
-                              </div>
-                            }
-                            <p class="ready__message">{{ block.figure.message }}</p>
-                          </div>
-                        }
-
-                        @case ('domains') {
-                          <div class="fig fig--domains">
-                            @for (row of block.figure.rows; track row.domain) {
-                              <div class="domain__card">
-                                <p class="domain__name">{{ row.domain }}</p>
-                                <p class="domain__label">AS-IS</p>
-                                <p class="domain__asis">{{ row.asis }}</p>
-                                <span class="domain__arrow" aria-hidden="true">↓</span>
-                                <p class="domain__label domain__label--tobe">TO-BE</p>
-                                <p class="domain__tobe">{{ row.tobe }}</p>
-                              </div>
-                            }
-                          </div>
-                        }
-
-                        @case ('process') {
-                          <div class="fig fig--process">
-                            <ol class="flow">
-                              @for (row of block.figure.rows; track row.n) {
-                                <li class="flow__item">
-                                  <span class="flow__n">{{ row.n }}</span>
-                                  <span class="flow__stage">{{ row.stage }}</span>
-                                  <span class="flow__asis">{{ row.asis }}</span>
-                                  <span class="flow__arrow" aria-hidden="true">→</span>
-                                  <span class="flow__tobe">{{ row.tobe }}</span>
-                                </li>
-                              }
-                            </ol>
-                            <ul class="flow__goals">
-                              @for (goal of block.figure.goals; track $index) {
-                                <li>{{ goal }}</li>
-                              }
-                            </ul>
-                          </div>
-                        }
-
-                        @case ('kpis') {
-                          <div class="fig fig--kpis">
-                            @for (row of block.figure.rows; track row.code) {
-                              <div class="kpi">
-                                <p class="kpi__code">{{ row.code }}</p>
-                                <p class="kpi__values">
-                                  <span class="kpi__from">{{ row.from }}</span>
-                                  <span class="kpi__arrow" aria-hidden="true">→</span>
-                                  <span class="kpi__to">{{ row.to }}</span>
-                                </p>
-                              </div>
-                            }
-                          </div>
-                        }
-                      }
+                      <button
+                        class="doc-figure__open"
+                        type="button"
+                        (click)="openFigure(block)"
+                        [attr.aria-label]="'Ampliar ' + block.number + ': ' + block.caption"
+                      >
+                        <img
+                          [src]="block.figure.thumb"
+                          [alt]="block.figure.alt"
+                          [style.aspect-ratio]="block.figure.ratio"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span class="doc-figure__zoom">Ampliar ⤢</span>
+                      </button>
 
                       @if (block.note) {
                         <p class="doc-figure__note">{{ block.note }}</p>
@@ -423,5 +306,9 @@
     </section>
   }
 </main>
+
+@if (selected(); as figure) {
+  <app-figure-lightbox [figure]="figure" (closed)="closeFigure()" />
+}
 
 <app-site-footer />

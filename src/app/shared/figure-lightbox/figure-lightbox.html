@@ -1,0 +1,43 @@
+<div
+  class="lightbox"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="lightbox-title"
+  (click)="onBackdrop($event)"
+  (keydown)="onKeydown($event)"
+>
+  <div class="lightbox__panel" [class.lightbox__panel--zoomed]="zoomed()">
+    <header class="lightbox__bar">
+      <div class="lightbox__heading">
+        <p class="lightbox__num">{{ figure().number }}</p>
+        <p class="lightbox__title" id="lightbox-title">{{ figure().caption }}</p>
+      </div>
+
+      <div class="lightbox__actions">
+        <button class="lightbox__action" type="button" (click)="toggleZoom()">
+          {{ zoomed() ? 'Ajustar a pantalla' : 'Ver al 100 %' }}
+        </button>
+        <a class="lightbox__action" [href]="figure().src" target="_blank" rel="noopener">
+          Abrir original ↗
+        </a>
+        <button
+          #closeButton
+          class="lightbox__close"
+          type="button"
+          aria-label="Cerrar"
+          (click)="closed.emit()"
+        >
+          ×
+        </button>
+      </div>
+    </header>
+
+    <div class="lightbox__stage" [class.lightbox__stage--zoomed]="zoomed()">
+      <img class="lightbox__image" [src]="figure().src" [alt]="figure().alt" />
+    </div>
+
+    @if (figure().note) {
+      <p class="lightbox__note">{{ figure().note }}</p>
+    }
+  </div>
+</div>
