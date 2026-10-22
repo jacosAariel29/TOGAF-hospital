@@ -1,0 +1,45 @@
+<div class="viewer">
+  <header class="viewer__bar">
+    <a class="viewer__back" [routerLink]="['/fase', id(), 'entregable', code()]">
+      <span aria-hidden="true">←</span>
+      <span>Volver al entregable</span>
+    </a>
+
+    <div class="viewer__id">
+      <span class="viewer__code">{{ doc.code }} · v{{ doc.version }}</span>
+      <span class="viewer__title">{{ doc.title }}</span>
+    </div>
+
+    <div class="viewer__actions">
+      <a class="viewer__btn viewer__btn--ghost" [href]="doc.file.path" target="_blank" rel="noopener">
+        Abrir en pestaña ↗
+      </a>
+      <a class="viewer__btn viewer__btn--primary" [href]="doc.file.path" [download]="doc.file.name">
+        Descargar PDF
+      </a>
+    </div>
+  </header>
+
+  <div class="viewer__stage">
+    @if (!loaded()) {
+      <div class="viewer__loading" aria-hidden="true">
+        <span class="viewer__spinner"></span>
+        <p>Cargando {{ doc.file.name }} ({{ doc.file.size }})…</p>
+      </div>
+    }
+
+    <iframe
+      class="viewer__frame"
+      [src]="fileUrl"
+      [title]="'Vista previa de ' + doc.code + ' ' + doc.title"
+      (load)="markLoaded()"
+    ></iframe>
+  </div>
+
+  <noscript>
+    <p class="viewer__fallback">
+      El visor necesita JavaScript.
+      <a [href]="doc.file.path">Descargue el PDF</a>.
+    </p>
+  </noscript>
+</div>

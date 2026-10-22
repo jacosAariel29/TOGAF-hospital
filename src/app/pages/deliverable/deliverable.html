@@ -1,0 +1,427 @@
+<app-site-header />
+
+<main class="doc-page">
+  @if (deliverable(); as item) {
+    <section class="band">
+      <div class="band__inner">
+        <p class="breadcrumbs">
+          <a routerLink="/">Inicio</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <a [routerLink]="['/fase', id()]">{{ phase()?.label }}</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <span>Entregable {{ item.code }}</span>
+        </p>
+
+        <p class="band__kicker">TOGAF 9.1 · {{ phase()?.label }} · Entregable {{ item.code }}</p>
+        <h1 class="band__title">{{ item.title }}</h1>
+
+        @if (isDocument()) {
+          <p class="band__english">{{ doc.english }}</p>
+          <p class="band__lead">{{ doc.summary }}</p>
+
+          <dl class="band__meta">
+            <div class="band__meta-item">
+              <dt>Documento</dt>
+              <dd>{{ doc.code }} · versión {{ doc.version }}</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Fecha</dt>
+              <dd>{{ doc.date }}</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Autor</dt>
+              <dd>{{ doc.author }}</dd>
+            </div>
+            <div class="band__meta-item">
+              <dt>Estado</dt>
+              <dd>{{ doc.status }}</dd>
+            </div>
+          </dl>
+        }
+      </div>
+    </section>
+
+    @if (isDocument()) {
+      <div class="doc-layout">
+        <article class="doc-main">
+          @for (section of sections(); track section.id) {
+            <section class="doc-section" [id]="section.id">
+              <p class="doc-section__kicker">{{ section.kicker }}</p>
+              <h2 class="doc-section__title">{{ section.title }}</h2>
+
+              @for (block of section.blocks; track $index) {
+                @switch (block.kind) {
+                  @case ('p') {
+                    <p class="doc-p" [class.doc-p--lead]="block.lead">{{ block.text }}</p>
+                  }
+
+                  @case ('h3') {
+                    <h3 class="doc-h3">{{ block.text }}</h3>
+                  }
+
+                  @case ('quote') {
+                    <blockquote class="doc-quote">
+                      <p>{{ block.text }}</p>
+                      @if (block.source) {
+                        <cite>{{ block.source }}</cite>
+                      }
+                    </blockquote>
+                  }
+
+                  @case ('callout') {
+                    <aside class="doc-callout">
+                      <p class="doc-callout__title">{{ block.title }}</p>
+                      <p>{{ block.text }}</p>
+                    </aside>
+                  }
+
+                  @case ('list') {
+                    @if (block.ordered) {
+                      <ol class="doc-list doc-list--ordered">
+                        @for (li of block.items; track $index) {
+                          <li>{{ li }}</li>
+                        }
+                      </ol>
+                    } @else {
+                      <ul class="doc-list">
+                        @for (li of block.items; track $index) {
+                          <li>{{ li }}</li>
+                        }
+                      </ul>
+                    }
+                  }
+
+                  @case ('table') {
+                    <figure class="doc-table-figure">
+                      <figcaption class="doc-table__caption">
+                        <span class="doc-table__num">{{ block.number }}</span>
+                        {{ block.caption }}
+                      </figcaption>
+                      <div class="doc-table__wrap">
+                        <table class="doc-table" [class.doc-table--wide]="block.wide">
+                          <thead>
+                            <tr>
+                              @for (column of block.columns; track $index) {
+                                <th scope="col">{{ column }}</th>
+                              }
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (row of block.rows; track $index) {
+                              <tr>
+                                @for (cell of row; track $index) {
+                                  <td
+                                    [class.cell--ok]="cell.tone === 'ok'"
+                                    [class.cell--warn]="cell.tone === 'warn'"
+                                    [class.cell--bad]="cell.tone === 'bad'"
+                                    [class.cell--info]="cell.tone === 'info'"
+                                    [class.cell--strong]="cell.strong"
+                                    [class.cell--code]="block.codes && $index === 0"
+                                  >
+                                    {{ cell.t }}
+                                  </td>
+                                }
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                      @if (block.note) {
+                        <p class="doc-table__note">{{ block.note }}</p>
+                      }
+                    </figure>
+                  }
+
+                  @case ('figure') {
+                    <figure class="doc-figure">
+                      <figcaption class="doc-figure__caption">
+                        <span class="doc-figure__num">{{ block.number }}</span>
+                        {{ block.caption }}
+                      </figcaption>
+
+                      @switch (block.figure.kind) {
+                        @case ('concept') {
+                          <div class="fig fig--concept">
+                            <div class="concept__patient">
+                              <span class="concept__patient-title">Paciente</span>
+                              <span class="concept__patient-text">
+                                Expediente Clínico Electrónico único, desde la admisión hasta el alta
+                              </span>
+                            </div>
+
+                            <span class="concept__arrow" aria-hidden="true">↓</span>
+
+                            <div class="concept__domains">
+                              <div class="concept__domain">
+                                <span class="concept__domain-title">Negocio</span>
+                                <span class="concept__domain-text">Consulta externa centrada en el paciente</span>
+                              </div>
+                              <div class="concept__domain">
+                                <span class="concept__domain-title">Datos</span>
+                                <span class="concept__domain-text">Historia clínica estructurada y única</span>
+                              </div>
+                              <div class="concept__domain">
+                                <span class="concept__domain-title">Aplicaciones</span>
+                                <span class="concept__domain-text">HCE, laboratorio, imágenes e interoperabilidad</span>
+                              </div>
+                              <div class="concept__domain">
+                                <span class="concept__domain-title">Tecnología</span>
+                                <span class="concept__domain-text">Red, servidores y continuidad operativa</span>
+                              </div>
+                            </div>
+
+                            <div class="concept__cross">
+                              <span>Seguridad y confidencialidad</span>
+                              <span>Interoperabilidad</span>
+                              <span>Disponibilidad</span>
+                              <span>Gobierno de arquitectura</span>
+                            </div>
+                          </div>
+                        }
+
+                        @case ('capabilities') {
+                          <div class="fig fig--capabilities">
+                            <div class="caps__legend">
+                              <span><i class="caps__dot caps__dot--asis"></i> AS-IS</span>
+                              <span><i class="caps__dot caps__dot--tobe"></i> TO-BE</span>
+                              <span class="caps__scale">Escala 0 – 5</span>
+                            </div>
+                            @for (row of block.figure.rows; track row.name) {
+                              <div class="caps__row">
+                                <span class="caps__name">
+                                  {{ row.name }}
+                                  @if (row.critical) {
+                                    <span class="caps__critical" title="Capacidad crítica">crítica</span>
+                                  }
+                                </span>
+                                <span class="caps__bars">
+                                  <span class="caps__bar caps__bar--asis" [style.width]="width(row.asis)">
+                                    <i>{{ row.asis }}</i>
+                                  </span>
+                                  <span class="caps__bar caps__bar--tobe" [style.width]="width(row.tobe)">
+                                    <i>{{ row.tobe }}</i>
+                                  </span>
+                                </span>
+                              </div>
+                            }
+                          </div>
+                        }
+
+                        @case ('readiness') {
+                          <div class="fig fig--readiness">
+                            @for (row of block.figure.rows; track row.name) {
+                              <div class="ready__row">
+                                <span class="ready__light" [attr.data-state]="row.state" aria-hidden="true"></span>
+                                <span class="ready__name">{{ row.name }}</span>
+                                <span class="ready__state" [attr.data-state]="row.state">{{ row.required }}</span>
+                              </div>
+                            }
+                            <p class="ready__message">{{ block.figure.message }}</p>
+                          </div>
+                        }
+
+                        @case ('domains') {
+                          <div class="fig fig--domains">
+                            @for (row of block.figure.rows; track row.domain) {
+                              <div class="domain__card">
+                                <p class="domain__name">{{ row.domain }}</p>
+                                <p class="domain__label">AS-IS</p>
+                                <p class="domain__asis">{{ row.asis }}</p>
+                                <span class="domain__arrow" aria-hidden="true">↓</span>
+                                <p class="domain__label domain__label--tobe">TO-BE</p>
+                                <p class="domain__tobe">{{ row.tobe }}</p>
+                              </div>
+                            }
+                          </div>
+                        }
+
+                        @case ('process') {
+                          <div class="fig fig--process">
+                            <ol class="flow">
+                              @for (row of block.figure.rows; track row.n) {
+                                <li class="flow__item">
+                                  <span class="flow__n">{{ row.n }}</span>
+                                  <span class="flow__stage">{{ row.stage }}</span>
+                                  <span class="flow__asis">{{ row.asis }}</span>
+                                  <span class="flow__arrow" aria-hidden="true">→</span>
+                                  <span class="flow__tobe">{{ row.tobe }}</span>
+                                </li>
+                              }
+                            </ol>
+                            <ul class="flow__goals">
+                              @for (goal of block.figure.goals; track $index) {
+                                <li>{{ goal }}</li>
+                              }
+                            </ul>
+                          </div>
+                        }
+
+                        @case ('kpis') {
+                          <div class="fig fig--kpis">
+                            @for (row of block.figure.rows; track row.code) {
+                              <div class="kpi">
+                                <p class="kpi__code">{{ row.code }}</p>
+                                <p class="kpi__values">
+                                  <span class="kpi__from">{{ row.from }}</span>
+                                  <span class="kpi__arrow" aria-hidden="true">→</span>
+                                  <span class="kpi__to">{{ row.to }}</span>
+                                </p>
+                              </div>
+                            }
+                          </div>
+                        }
+                      }
+
+                      @if (block.note) {
+                        <p class="doc-figure__note">{{ block.note }}</p>
+                      }
+                    </figure>
+                  }
+
+                  @case ('principles') {
+                    <div class="principles">
+                      @for (principle of block.items; track principle.code) {
+                        <article class="principle">
+                          <p class="principle__code">
+                            {{ principle.code }}
+                            @if (principle.proposed) {
+                              <span class="principle__tag">Propuesto</span>
+                            }
+                          </p>
+                          <h3 class="principle__name">{{ principle.name }}</h3>
+                          <p class="principle__statement">{{ principle.statement }}</p>
+                          <details class="principle__details">
+                            <summary>Justificación e implicaciones</summary>
+                            <p>{{ principle.rationale }}</p>
+                            <p>{{ principle.implications }}</p>
+                          </details>
+                        </article>
+                      }
+                    </div>
+                  }
+
+                  @case ('stats') {
+                    <div class="stats">
+                      @for (stat of block.items; track stat.label) {
+                        <div class="stats__item">
+                          <span class="stats__value">{{ stat.value }}</span>
+                          <span class="stats__label">{{ stat.label }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  @case ('refs') {
+                    <ul class="doc-refs">
+                      @for (ref of block.items; track $index) {
+                        <li>{{ ref }}</li>
+                      }
+                    </ul>
+                  }
+
+                  @case ('cta') {
+                    <div class="doc-cta">
+                      <div>
+                        <p class="doc-cta__title">Documento oficial {{ doc.code }} · versión {{ doc.version }}</p>
+                        <p class="doc-cta__text">
+                          PDF de {{ doc.file.size }} aprobado como borrador para revisión del Architecture Review
+                          Board. Descárguelo o ábralo en el visor antes de la exposición.
+                        </p>
+                      </div>
+                      <div class="doc-cta__actions">
+                        <a class="btn btn--primary" [href]="doc.file.path" [download]="doc.file.name">
+                          Descargar PDF
+                        </a>
+                        <a class="btn btn--ghost" [routerLink]="previewLink()" target="_blank" rel="noopener">
+                          Vista previa ↗
+                        </a>
+                      </div>
+                    </div>
+                  }
+                }
+              }
+            </section>
+          }
+        </article>
+
+        <aside class="doc-aside">
+          <div class="doc-file">
+            <p class="doc-file__label">Documento oficial</p>
+            <p class="doc-file__name">{{ doc.file.name }}</p>
+            <p class="doc-file__meta">{{ doc.version }} · {{ doc.date }} · PDF {{ doc.file.size }}</p>
+            <div class="doc-file__actions">
+              <a class="btn btn--primary btn--sm" [href]="doc.file.path" [download]="doc.file.name">
+                Descargar
+              </a>
+              <a
+                class="btn btn--ghost btn--sm"
+                [routerLink]="previewLink()"
+                target="_blank"
+                rel="noopener"
+              >
+                Vista previa ↗
+              </a>
+            </div>
+          </div>
+
+          <nav class="doc-index" aria-label="Contenido del documento">
+            <p class="doc-index__title">Contenido</p>
+            <ul class="doc-index__list">
+              @for (section of sections(); track section.id) {
+                <li>
+                  <a
+                    class="doc-index__link"
+                    [href]="'#' + section.id"
+                    (click)="scrollToSection(section.id, $event)"
+                  >
+                    {{ section.title }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </nav>
+
+          <div class="doc-nav">
+            <a class="doc-nav__link" [routerLink]="['/fase', id()]">
+              <span class="doc-nav__dir">← Fase</span>
+              <span class="doc-nav__name">{{ phase()?.label }}</span>
+            </a>
+            @if (nav().next; as next) {
+              <a class="doc-nav__link doc-nav__link--next" [routerLink]="['/fase', next.id]">
+                <span class="doc-nav__dir">Siguiente fase →</span>
+                <span class="doc-nav__name">{{ next.label }}</span>
+              </a>
+            }
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <div class="canvas">
+        <div class="canvas__empty">
+          <span class="canvas__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round" />
+              <path d="M14 3v5h5M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <p class="canvas__title">Entregable en blanco</p>
+          <p class="canvas__text">
+            El contenido de este entregable se completará y aprobará en el Architecture Review Board.
+          </p>
+        </div>
+      </div>
+    }
+  } @else {
+    <section class="deliverable-missing">
+      <p class="kicker">TOGAF 9.1</p>
+      <h1>Entregable no disponible</h1>
+      <p>
+        Este entregable todavía no está habilitado. La hoja se habilitará cuando su contenido esté
+        aprobado en el Architecture Review Board.
+      </p>
+      <a class="btn btn--primary" [routerLink]="['/fase', id()]">Volver a la fase</a>
+    </section>
+  }
+</main>
+
+<app-site-footer />

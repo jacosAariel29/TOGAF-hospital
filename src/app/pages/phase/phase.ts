@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { findPhaseContent } from '../../core/phase-content.data';
 import {
   findPhase,
   neighbourPhases,
@@ -30,6 +31,8 @@ export class PhasePage {
       : null;
   });
 
+  readonly content = computed(() => findPhaseContent(this.id()));
+
   readonly nav = computed(() => {
     const phase = this.phase();
     if (!phase) {
@@ -42,6 +45,18 @@ export class PhasePage {
       next: next ? { ...next, label: phaseLabel(next) } : null,
     };
   });
+
+  scrollToSection(id: string, event: Event): void {
+    event.preventDefault();
+
+    const target = document.getElementById(id);
+    if (!target) {
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', `${location.pathname}#${id}`);
+  }
 
   constructor() {
     effect(() => {

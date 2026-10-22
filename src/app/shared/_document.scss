@@ -1,0 +1,219 @@
+@mixin band {
+  .band {
+    background:
+      radial-gradient(70% 80% at 12% 0%, #ffffff 0%, rgba(255, 255, 255, 0) 62%),
+      linear-gradient(180deg, #f3f9f7 0%, var(--mist) 100%);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .band__inner {
+    width: min(1220px, 92vw);
+    margin-inline: auto;
+    padding: clamp(1.8rem, 4vw, 3rem) 0 clamp(2rem, 4vw, 3.2rem);
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 0 0 clamp(1.2rem, 3vw, 2rem);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .breadcrumbs a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--brand);
+  }
+
+  .breadcrumbs__sep {
+    color: var(--accent);
+  }
+
+  .band__kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .band__title {
+    margin: 0.8rem 0 0;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 4.4vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .band__english {
+    margin: 0.55rem 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.6vw, 1.18rem);
+    color: var(--brand);
+  }
+
+  .band__lead {
+    margin: 1.35rem 0 0;
+    max-width: 78ch;
+    font-size: clamp(0.95rem, 1.25vw, 1.05rem);
+    line-height: 1.68;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
+  .band__meta {
+    margin: 1.7rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .band__meta-item {
+    padding: 0.72rem 0.9rem;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+
+  .band__meta-item dt {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .band__meta-item dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .band__meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .band__inner {
+      padding: 1.4rem 0 1.6rem;
+    }
+
+    .breadcrumbs {
+      margin-bottom: 0.9rem;
+    }
+
+    .band__title {
+      margin-top: 0.55rem;
+    }
+
+    .band__english {
+      margin-top: 0.4rem;
+    }
+
+    .band__lead {
+      margin-top: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .band__meta {
+      margin-top: 1.1rem;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .band__meta-item {
+      padding: 0.62rem 0.8rem;
+    }
+  }
+}
+
+@mixin layout {
+  .doc-layout {
+    width: min(1220px, 92vw);
+    margin-inline: auto;
+    padding: clamp(2.2rem, 5vw, 3.8rem) 0 clamp(3rem, 6vw, 5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .doc-layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.6rem;
+    }
+  }
+}
+
+@mixin canvas {
+  .canvas {
+    min-height: calc(100vh - 340px);
+    display: grid;
+    place-items: center;
+    padding: clamp(2.5rem, 6vw, 5rem) 0;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(13, 74, 115, 0.12) 1px, transparent 0) 0 0 / 22px 22px,
+      var(--mist);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .canvas__empty {
+    max-width: 36ch;
+    text-align: center;
+  }
+
+  .canvas__icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 1.15rem;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--accent);
+  }
+
+  .canvas__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .canvas__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+
+  .canvas__text {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 1024px) {
+    .canvas {
+      min-height: calc(100vh - 300px);
+    }
+  }
+}

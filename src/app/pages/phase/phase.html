@@ -1,53 +1,194 @@
 <app-site-header />
 
-<main class="phase-page">
-  <div class="phase-bar">
-    <div class="phase-bar__inner">
-      <a class="back" routerLink="/">
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <path d="M15 10H3M8 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        Inicio
-      </a>
-      @if (phase(); as current) {
-        <span class="phase-bar__meta">{{ current.label }} · {{ current.heading }}</span>
-      }
-    </div>
-  </div>
-
+<main class="doc-page">
   @if (phase(); as current) {
-    <article class="sheet" aria-labelledby="phase-title">
-      <header class="sheet__head">
-        <p class="sheet__kicker">TOGAF 9.1 · {{ current.label }}</p>
-        <h1 class="sheet__title" id="phase-title">{{ current.name }}</h1>
-        @if (current.detail) {
-          <p class="sheet__detail">{{ current.detail }}</p>
+    <section class="band">
+      <div class="band__inner">
+        <p class="breadcrumbs">
+          <a routerLink="/">Inicio</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <span>{{ current.label }}</span>
+        </p>
+
+        <p class="band__kicker">TOGAF 9.1 · {{ current.label }}</p>
+        <h1 class="band__title">{{ current.name }}</h1>
+
+        @if (content(); as doc) {
+          <p class="band__english">{{ doc.english }}</p>
+          <p class="band__lead">{{ doc.objective }}</p>
+          <dl class="band__meta">
+            @for (item of doc.meta; track item.label) {
+              <div class="band__meta-item">
+                <dt>{{ item.label }}</dt>
+                <dd>{{ item.value }}</dd>
+              </div>
+            }
+          </dl>
+        } @else {
+          <p class="band__lead">{{ current.summary }}</p>
         }
-        <p class="sheet__project">{{ project.title }}</p>
-        <span class="sheet__rule" aria-hidden="true"></span>
-      </header>
-      <div class="sheet__body" aria-label="Contenido de la fase"></div>
-    </article>
+      </div>
+    </section>
 
-    <nav class="phase-nav" aria-label="Navegación entre fases">
-      @if (nav().previous; as previous) {
-        <a class="phase-nav__link" [routerLink]="['/fase', previous.id]">
-          <span class="phase-nav__dir">← Fase anterior</span>
-          <span class="phase-nav__name">{{ previous.label }} · {{ previous.name }}</span>
-        </a>
-      } @else {
-        <span class="phase-nav__spacer"></span>
-      }
+    @if (content(); as doc) {
+      <div class="doc-layout">
+        <div class="doc-main">
+          <section class="doc-section" id="simple">
+            <p class="doc-section__kicker">En términos sencillos</p>
+            <h2 class="doc-section__title">La pregunta que responde esta fase</h2>
+            <blockquote class="callout">
+              <p class="callout__question">{{ doc.simple.question }}</p>
+              <p class="callout__text">{{ doc.simple.text }}</p>
+            </blockquote>
+          </section>
 
-      @if (nav().next; as next) {
-        <a class="phase-nav__link phase-nav__link--next" [routerLink]="['/fase', next.id]">
-          <span class="phase-nav__dir">Fase siguiente →</span>
-          <span class="phase-nav__name">{{ next.label }} · {{ next.name }}</span>
-        </a>
-      } @else {
-        <span class="phase-nav__spacer"></span>
-      }
-    </nav>
+          <section class="doc-section" id="resultados">
+            <p class="doc-section__kicker">Qué se busca lograr</p>
+            <h2 class="doc-section__title">Cuatro resultados al cerrar la fase</h2>
+            <div class="outcome-grid">
+              @for (outcome of doc.outcomes; track outcome.title) {
+                <article class="outcome">
+                  <h3 class="outcome__title">{{ outcome.title }}</h3>
+                  <p class="outcome__text">{{ outcome.description }}</p>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="doc-section" id="pasos">
+            <p class="doc-section__kicker">Aplicación en el hospital</p>
+            <h2 class="doc-section__title">Siete pasos para construir la visión</h2>
+            <ol class="steps">
+              @for (step of doc.steps; track step.number) {
+                <li class="step">
+                  <span class="step__number">{{ step.number.toString().padStart(2, '0') }}</span>
+                  <span class="step__title">{{ step.title }}</span>
+                  <p class="step__text">{{ step.description }}</p>
+                  <ul class="step__points">
+                    @for (point of step.points; track point) {
+                      <li class="step__point">{{ point }}</li>
+                    }
+                  </ul>
+                </li>
+              }
+            </ol>
+          </section>
+
+          <section class="doc-section" id="togaf">
+            <p class="doc-section__kicker">Referencia</p>
+            <h2 class="doc-section__title">Los once pasos de la Fase A en TOGAF 9.1</h2>
+            <ol class="togaf">
+              @for (item of doc.togafSteps; track item.number) {
+                <li class="togaf__item">
+                  <span class="togaf__num">{{ item.number }}</span>
+                  <span>{{ item.label }}</span>
+                </li>
+              }
+            </ol>
+          </section>
+
+          <section class="doc-section" id="entregables">
+            <p class="doc-section__kicker">Entregables</p>
+            <h2 class="doc-section__title">Los cinco entregables de la fase</h2>
+            <ul class="deliverables">
+              @for (item of doc.deliverables; track item.code) {
+                <li class="deliverable">
+                  <a
+                    class="deliverable__row"
+                    [class.deliverable__row--planned]="item.status !== 'available'"
+                    [routerLink]="item.status === 'available' ? ['/fase', current.id, 'entregable', item.code] : null"
+                    [attr.aria-disabled]="item.status !== 'available' ? 'true' : null"
+                    [attr.tabindex]="item.status !== 'available' ? -1 : null"
+                  >
+                    <span class="deliverable__code">{{ item.code }}</span>
+                    <span class="deliverable__main">
+                      <span class="deliverable__title">{{ item.title }}</span>
+                      <span class="deliverable__description">{{ item.description }}</span>
+                    </span>
+                    @if (item.status === 'available') {
+                      <span class="deliverable__action">
+                        Abrir entregable
+                        <svg viewBox="0 0 20 20" aria-hidden="true">
+                          <path d="M4 10h12M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                    } @else {
+                      <span class="deliverable__status">Próximamente</span>
+                    }
+                  </a>
+                </li>
+              }
+            </ul>
+          </section>
+
+          <section class="doc-section" id="cierre">
+            <p class="doc-section__kicker">Cierre de la fase</p>
+            <h2 class="doc-section__title">Criterios para continuar</h2>
+            <ul class="criteria">
+              @for (criterion of doc.exitCriteria; track criterion) {
+                <li class="criteria__item">{{ criterion }}</li>
+              }
+            </ul>
+            <ul class="doc-notes">
+              @for (note of doc.notes; track note) {
+                <li class="doc-note">{{ note }}</li>
+              }
+            </ul>
+          </section>
+        </div>
+
+        <aside class="doc-aside">
+          <nav class="doc-index" aria-label="Contenido de la fase">
+            <p class="doc-index__title">En esta página</p>
+            <ul class="doc-index__list">
+              @for (section of doc.sections; track section.id) {
+                <li>
+                  <a
+                    class="doc-index__link"
+                    [href]="'#' + section.id"
+                    (click)="scrollToSection(section.id, $event)"
+                  >
+                    {{ section.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+
+          </nav>
+
+          <nav class="doc-nav" aria-label="Navegación entre fases">
+            <p class="doc-index__title">Navegación</p>
+            @if (nav().previous; as previous) {
+              <a class="doc-nav__link" [routerLink]="['/fase', previous.id]">
+                <span class="doc-nav__dir">← Fase anterior</span>
+                <span class="doc-nav__name">{{ previous.label }} · {{ previous.name }}</span>
+              </a>
+            }
+            @if (nav().next; as next) {
+              <a class="doc-nav__link doc-nav__link--next" [routerLink]="['/fase', next.id]">
+                <span class="doc-nav__dir">Fase siguiente →</span>
+                <span class="doc-nav__name">{{ next.label }} · {{ next.name }}</span>
+              </a>
+            }
+          </nav>
+        </aside>
+      </div>
+    } @else {
+      <div class="canvas">
+        <div class="canvas__empty">
+          <span class="canvas__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round" />
+              <path d="M14 3v5h5M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <p class="canvas__title">Contenido en preparación</p>
+          <p class="canvas__text">
+            Esta fase todavía no tiene su documentación cargada; se incorporará en el Architecture Review Board.
+          </p>
+        </div>
+      </div>
+    }
   } @else {
     <section class="phase-missing">
       <p class="kicker">TOGAF 9.1</p>

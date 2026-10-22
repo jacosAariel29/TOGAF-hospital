@@ -128,7 +128,7 @@ a {
 @media print {
   @page {
     size: A4;
-    margin: 0;
+    margin: 16mm 18mm;
   }
 
   body {
@@ -137,8 +137,11 @@ a {
 
   .site-header,
   .site-footer,
-  .phase-bar,
+  app-site-header,
+  app-site-footer,
   .phase-nav,
+  .doc-aside,
+  .breadcrumbs,
   .hero__foot {
     display: none !important;
   }
