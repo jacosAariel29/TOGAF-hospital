@@ -44,7 +44,7 @@
 
           <section class="doc-section" id="resultados">
             <p class="doc-section__kicker">Qué se busca lograr</p>
-            <h2 class="doc-section__title">Cuatro resultados al cerrar la fase</h2>
+            <h2 class="doc-section__title">{{ doc.headings.outcomes }}</h2>
             <div class="outcome-grid">
               @for (outcome of doc.outcomes; track outcome.title) {
                 <article class="outcome">
@@ -57,7 +57,7 @@
 
           <section class="doc-section" id="pasos">
             <p class="doc-section__kicker">Aplicación en el hospital</p>
-            <h2 class="doc-section__title">Siete pasos para construir la visión</h2>
+            <h2 class="doc-section__title">{{ doc.headings.steps }}</h2>
             <ol class="steps">
               @for (step of doc.steps; track step.number) {
                 <li class="step">
@@ -76,7 +76,7 @@
 
           <section class="doc-section" id="togaf">
             <p class="doc-section__kicker">Referencia</p>
-            <h2 class="doc-section__title">Los once pasos de la Fase A en TOGAF 9.1</h2>
+            <h2 class="doc-section__title">{{ doc.headings.togaf }}</h2>
             <ol class="togaf">
               @for (item of doc.togafSteps; track item.number) {
                 <li class="togaf__item">
@@ -89,14 +89,18 @@
 
           <section class="doc-section" id="entregables">
             <p class="doc-section__kicker">Entregables</p>
-            <h2 class="doc-section__title">Los cinco entregables de la fase</h2>
+            <h2 class="doc-section__title">{{ doc.headings.deliverables }}</h2>
             <ul class="deliverables">
               @for (item of doc.deliverables; track item.code) {
                 <li class="deliverable">
                   <a
                     class="deliverable__row"
                     [class.deliverable__row--planned]="item.status !== 'available'"
-                    [routerLink]="item.status === 'available' ? ['/fase', current.id, 'entregable', item.code] : null"
+                    [routerLink]="
+                      item.status === 'available'
+                        ? ['/fase', current.id, 'entregable', item.code]
+                        : null
+                    "
                     [attr.aria-disabled]="item.status !== 'available' ? 'true' : null"
                     [attr.tabindex]="item.status !== 'available' ? -1 : null"
                   >
@@ -105,14 +109,23 @@
                       <span class="deliverable__title">{{ item.title }}</span>
                       <span class="deliverable__description">{{ item.description }}</span>
                       @if (item.status === 'available' && !item.summaryAvailable) {
-                        <span class="deliverable__note">Resumen en preparación · documento formal disponible</span>
+                        <span class="deliverable__note"
+                          >Resumen en preparación · documento formal disponible</span
+                        >
                       }
                     </span>
                     @if (item.status === 'available') {
                       <span class="deliverable__action">
                         {{ item.summaryAvailable ? 'Abrir entregable' : 'Ver documento' }}
                         <svg viewBox="0 0 20 20" aria-hidden="true">
-                          <path d="M4 10h12M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                          <path
+                            d="M4 10h12M11 5l5 5-5 5"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
                         </svg>
                       </span>
                     } @else {
@@ -156,7 +169,6 @@
                 </li>
               }
             </ul>
-
           </nav>
 
           <nav class="doc-nav" aria-label="Navegación entre fases">
@@ -181,13 +193,17 @@
         <div class="canvas__empty">
           <span class="canvas__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-linejoin="round" />
+              <path
+                d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"
+                stroke-linejoin="round"
+              />
               <path d="M14 3v5h5M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </span>
           <p class="canvas__title">Contenido en preparación</p>
           <p class="canvas__text">
-            Esta fase todavía no tiene su documentación cargada; se incorporará en el Architecture Review Board.
+            Esta fase todavía no tiene su documentación cargada; se incorporará en el Architecture
+            Review Board.
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import { A01 } from '../../core/a01.data';
+import { findDocument } from '../../core/deliverable-documents';
 import { findDeliverable } from '../../core/phase-content.data';
 import { findPhase, phaseLabel } from '../../core/phases.data';
 import { PROJECT } from '../../core/project';
@@ -44,12 +44,13 @@ export class PreviewPage {
       return null;
     }
 
-    if (item.code.toUpperCase() === A01.code) {
+    const document = findDocument(item.code);
+    if (document) {
       return {
-        code: A01.code,
-        title: A01.title,
-        version: A01.version,
-        file: A01.file,
+        code: document.code,
+        title: document.title,
+        version: document.version,
+        file: document.file,
       };
     }
 
@@ -75,7 +76,7 @@ export class PreviewPage {
       const doc = this.doc();
       this.documentTitle.setTitle(
         doc
-          ? `Vista previa — ${doc.code} ${doc.title} | ${PROJECT.shortTitle}`
+          ? `Vista previa - ${doc.code} ${doc.title} | ${PROJECT.shortTitle}`
           : `Documento no disponible | ${PROJECT.shortTitle}`,
       );
     });
